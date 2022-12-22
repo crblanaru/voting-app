@@ -37,21 +37,11 @@ services:
   worker:
     build:
       context: ./worker
-    depends_on:
-      redis:
-        condition: service_healthy 
-      db:
-        condition: service_healthy 
     networks:
       - back-tier
 
   redis:
     image: redis:5.0-alpine3.10
-    volumes:
-      - "./healthchecks:/healthchecks"
-    healthcheck:
-      test: /healthchecks/redis.sh
-      interval: "5s"
     ports: ["6379"]
     networks:
       - back-tier
@@ -64,11 +54,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - "db-data:/var/lib/postgresql/data"
-      - "./healthchecks:/healthchecks"
     ports: ["5432"]
-    healthcheck:
-      test: /healthchecks/postgres.sh
-      interval: "5s"
     networks:
       - back-tier
 
